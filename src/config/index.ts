@@ -10,7 +10,7 @@ const generateConfig = () => ({
     provingKeyLocation:
       process.env.NODE_ENV === "development"
         ? `${window.location.origin}/circuit/proving_key.bin`
-        : "https://s3-ap-southeast-1.amazonaws.com/public.veilos.io/proving_key.bin",
+        : "https://public.veilos.io/proving_key.bin",
   },
 });
 
