@@ -1,0 +1,16 @@
+diff --git a/node_modules/websnark/src/bn128.js b/node_modules/websnark/src/bn128.js
+index e286818..8ee6210 100644
+--- a/node_modules/websnark/src/bn128.js
++++ b/node_modules/websnark/src/bn128.js
+@@ -27,11 +27,6 @@ const SIZEF1 = 32;
+ const inBrowser = (typeof window !== "undefined");
+ let NodeWorker;
+ let NodeCrypto;
+-if (!inBrowser) {
+-    NodeWorker = require("worker_threads").Worker;
+-    NodeCrypto = require("crypto");
+-}
+-
+ 
+ class Deferred {
+     constructor() {
