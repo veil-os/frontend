@@ -31,8 +31,6 @@ export const CircuitContextProvider = ({ children }: { children: React.ReactNode
     persist: true,
   });
 
-  console.log("PKD", provingKeyData);
-
   const initializeCircuit = () => {
     if (state === "UNINITIALIZED") {
       setState("FETCHING");

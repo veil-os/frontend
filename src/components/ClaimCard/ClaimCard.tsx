@@ -339,12 +339,9 @@ export const ClaimCard: FunctionComponent = () => {
     initializeCircuit();
   }, [initializeCircuit]);
 
-  console.log("I", identity.state);
-  console.log("C", circuitState);
-  console.log("A", appState.state);
-
   useEffect(() => {
     // Ready the application when both circuit and identity are initialized
+    // Prevent ClaimCardRaw from rendering when identity isn't initialized
     if (identity.state === "INITIALIZED" && circuitState === "INITIALIZED" && appState.state === "UNINITIALIZED") {
       setAppState({ state: ClaimState.CIRCUIT_LOADED });
     }
@@ -390,6 +387,9 @@ export const ClaimCard: FunctionComponent = () => {
       console.log("SUCCESS", submittedClaim);
       setAppState({ state: ClaimState.SUCCESSFULLY_CLAIMED, claim: submittedClaim });
     } catch (e) {
+      console.error(e);
+      if (e.message.includes("nullifer exist"))
+        return setAppState({ state: ClaimState.ERROR, error: new Error("Cannot resubmit claim under the same topic") });
       setAppState({ state: ClaimState.ERROR, error: e });
     }
   };
