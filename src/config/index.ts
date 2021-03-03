@@ -7,10 +7,8 @@ const generateConfig = () => ({
   },
   semaphore: {
     treeDepth: 10,
-    provingKeyLocation:
-      process.env.NODE_ENV === "development"
-        ? `${window.location.origin}/circuit/proving_key.bin`
-        : "https://public.veilos.io/proving_key.bin",
+    provingKeyLocation: "https://public.veilos.io/proving_key.bin",
+    circuitLocation: "https://public.veilos.io/circuit.json",
   },
 });
 

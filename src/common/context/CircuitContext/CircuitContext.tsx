@@ -1,7 +1,7 @@
 import { genCircuit } from "libsemaphore";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import useFetch from "use-http";
-import {config} from "../../../config";
+import { config } from "../../../config";
 
 export type ContextState = "UNINITIALIZED" | "FETCHING" | "INITIALIZED" | "ERROR";
 
@@ -23,13 +23,15 @@ export const CircuitContextProvider = ({ children }: { children: React.ReactNode
   const [state, setState] = useState<ContextState>("UNINITIALIZED");
   const [provingKey, setProvingKey] = useState<any>();
   const [circuit, setCircuit] = useState<any>();
-  const { get: getProvingKey, data: provingKeyData } = useFetch<any>(
-    config.semaphore.provingKeyLocation,
-    { responseType: "arrayBuffer", persist: true }
-  );
-  const { get: getCircuit, data: circuitData } = useFetch(`${window.location.origin}/circuit/circuit.json`, {
+  const { get: getProvingKey, data: provingKeyData } = useFetch<any>(config.semaphore.provingKeyLocation, {
+    responseType: "arrayBuffer",
     persist: true,
   });
+  const { get: getCircuit, data: circuitData } = useFetch(config.semaphore.circuitLocation, {
+    persist: true,
+  });
+
+  console.log("PKD", provingKeyData);
 
   const initializeCircuit = () => {
     if (state === "UNINITIALIZED") {

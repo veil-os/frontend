@@ -339,6 +339,10 @@ export const ClaimCard: FunctionComponent = () => {
     initializeCircuit();
   }, [initializeCircuit]);
 
+  console.log("I", identity.state);
+  console.log("C", circuitState);
+  console.log("A", appState.state);
+
   useEffect(() => {
     // Ready the application when both circuit and identity are initialized
     if (identity.state === "INITIALIZED" && circuitState === "INITIALIZED" && appState.state === "UNINITIALIZED") {
