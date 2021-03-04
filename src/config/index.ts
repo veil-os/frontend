@@ -8,10 +8,10 @@ const generateConfig = () => ({
   },
   semaphore: {
     treeDepth: 10,
-    provingKeyLocation: isDevelopment
+    provingKeyLocation: true
       ? "http://localhost:9000/circuit/proving_key.bin"
       : "https://public.veilos.io/circuit/proving_key.bin",
-    circuitLocation: isDevelopment
+    circuitLocation: true
       ? "http://localhost:9000/circuit/circuit.json"
       : "https://public.veilos.io/circuit/circuit.json",
   },
