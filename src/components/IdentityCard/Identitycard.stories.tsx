@@ -1,4 +1,5 @@
 import React from "react";
+import { LayoutDark } from "../Layout";
 import { IdentityCard, IdentityCardProps } from ".";
 
 export default {
@@ -22,11 +23,12 @@ const props: IdentityCardProps = {
 };
 
 export const IdentityCardStory: React.FunctionComponent = () => (
-  <div>
-    <h1 className="storybook-title">IdentityCard (Initialized)</h1>
-    <IdentityCard {...{ ...props, identity: initializedIdentity }} />
-
-    <h1 className="storybook-title">IdentityCard (Uninitialized)</h1>
-    <IdentityCard {...props} />
-  </div>
+  <LayoutDark>
+    <div className="py-4 px-4">
+      <h1 className="storybook-title">IdentityCard (Initialized)</h1>
+      <IdentityCard {...{ ...props, identity: initializedIdentity }} />
+      <h1 className="storybook-title">IdentityCard (Uninitialized)</h1>
+      <IdentityCard {...props} />
+    </div>
+  </LayoutDark>
 );
