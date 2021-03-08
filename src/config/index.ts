@@ -3,9 +3,9 @@ export const isDevelopment = process.env.NODE_ENV === "development";
 const generateConfig = () => ({
   endpoint: isDevelopment ? "http://localhost:3000" : "https://api.veilos.io",
   defaults: {
-    DEFAULT_EXTERNAL_NULLIFIER: "FOOD_DISTRIBUTION_10022021",
-    DEFAULT_IDENTITY_GROUP: "ae883204-758d-412f-b73d-5639401bd8c8",
-    DEFAULT_MESSAGE: "TEST",
+    DEFAULT_EXTERNAL_NULLIFIER: "DEMO_TOPIC",
+    DEFAULT_IDENTITY_GROUP: "9436b3a9-e1c6-4214-8398-e5036c220995",
+    DEFAULT_MESSAGE: "DEMO_MESSAGE",
   },
   semaphore: {
     treeDepth: 10,

@@ -376,6 +376,9 @@ export const ClaimCard: FunctionComponent = () => {
     if (identity.state === "INITIALIZED" && circuitState === "INITIALIZED" && appState.state === "UNINITIALIZED") {
       setAppState({ state: ClaimState.CIRCUIT_LOADED });
     }
+    if (identity.state === "UNINITIALIZED") {
+      setAppState({ state: ClaimState.ERROR, error: new Error("Identity is not initialized") });
+    }
   }, [circuitState, identity, appState]);
 
   const onClaim = async ({ identityGroup, externalNullifier, message: rawMessage, type }: ClaimQR["payload"]) => {
