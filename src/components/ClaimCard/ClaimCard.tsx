@@ -176,6 +176,7 @@ export enum ClaimState {
   GENERATING_PROOF = "GENERATING_PROOF",
   SUBMITTING_CLAIM = "SUBMITTING_CLAIM",
   SUCCESSFULLY_CLAIMED = "SUCCESSFULLY_CLAIMED",
+  TIMEOUT_CLAIM = "TIMEOUT_CLAIM",
   ERROR = "ERROR",
 }
 
@@ -216,6 +217,11 @@ interface SuccessfullyClaimedState {
   claim: ClaimWTimestamp;
 }
 
+interface TimeoutClaimState {
+  state: ClaimState.TIMEOUT_CLAIM;
+  claim: ClaimWTimestamp;
+}
+
 interface ErrorState {
   state: ClaimState.ERROR;
   error: Error;
@@ -229,6 +235,7 @@ type ApplicationState =
   | GeneratingProofState
   | SubmittingClaimState
   | SuccessfullyClaimedState
+  | TimeoutClaimState
   | ErrorState;
 
 interface ClaimCardRawProps {
@@ -356,6 +363,26 @@ export const ClaimCardRaw: FunctionComponent<ClaimCardRawProps> = ({ onClaim, ap
             </div>
           </div>
         )}
+        {appState.state === ClaimState.TIMEOUT_CLAIM && (
+          <div>
+            <div className="text-center font-bold text-lg text-gray-600 my-6">Pending Validation</div>
+            <div className="bg-yellow-500 text-gray-800 p-3 rounded-md">
+              The claim has been submitted and is pending validation. The receipt of the voucher (if successful) is
+              below:
+            </div>
+            <div className="flex align-middle justify-center my-6">
+              <Identicon size="140" value={appState.claim.nullifier} />
+            </div>
+            <div className="mt-4 text-sm text-gray-600">Timestamp:</div>
+            <div className="text-sm text-gray-800">
+              Approx {format(appState.claim.timestamp, "dd/MM/yyyy hh:SS aa")}
+            </div>
+            <div className="mt-4 text-sm text-gray-600">Voucher Code:</div>
+            <div className="text-sm text-gray-800" style={{ overflowWrap: "anywhere" }}>
+              {appState.claim.nullifier}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -417,9 +444,19 @@ export const ClaimCard: FunctionComponent = () => {
         externalNullifier,
         message,
       };
-      const submittedClaim = await submitClaim(claimPayload);
-      console.log("SUCCESS", submittedClaim);
-      setAppState({ state: ClaimState.SUCCESSFULLY_CLAIMED, claim: submittedClaim });
+      try {
+        const submittedClaim = await submitClaim(claimPayload);
+        setAppState({ state: ClaimState.SUCCESSFULLY_CLAIMED, claim: submittedClaim });
+      } catch (e) {
+        if (e.message.includes("No response")) {
+          return setAppState({
+            state: ClaimState.TIMEOUT_CLAIM,
+            claim: { ...claimPayload, timestamp: Date.now() },
+          });
+        } else {
+          throw e;
+        }
+      }
     } catch (e) {
       console.error(e);
       if (e.message.includes("nullifer exist"))

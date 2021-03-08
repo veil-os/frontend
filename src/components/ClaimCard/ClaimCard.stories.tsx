@@ -75,6 +75,15 @@ export const ClaimCardStory: React.FunctionComponent = () => (
         }}
       />
 
+      <h1 className="storybook-title text-gray-100">ClaimCard (TIMEOUT_CLAIM)</h1>
+      <ClaimCardRaw
+        onClaim={console.log}
+        appState={{
+          state: ClaimState.TIMEOUT_CLAIM,
+          claim,
+        }}
+      />
+
       <h1 className="storybook-title text-gray-100">ClaimCard (ERROR)</h1>
       <ClaimCardRaw onClaim={console.log} appState={{ state: ClaimState.ERROR, error: new Error("Oops") }} />
     </div>
