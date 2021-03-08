@@ -16,6 +16,11 @@ interface AppCodeScannerProps {
   onAppCodeSubmission: (_claim: ClaimQR["payload"]) => void;
 }
 
+interface AppCodeScannerWithAutoLoadProps extends AppCodeScannerProps {
+  autoLoadFromQuery: boolean;
+  setAutoLoadFromQuery: (_autoLoad: boolean) => void;
+}
+
 export const AppCodeScanner: FunctionComponent<AppCodeScannerProps> = ({ onAppCodeSubmission }) => {
   const handleScan = (data: string | null) => {
     if (data) {
@@ -43,7 +48,11 @@ export const AppCodeScanner: FunctionComponent<AppCodeScannerProps> = ({ onAppCo
   );
 };
 
-export const AppCodeManualEntry: FunctionComponent<AppCodeScannerProps> = ({ onAppCodeSubmission }) => {
+export const AppCodeManualEntry: FunctionComponent<AppCodeScannerWithAutoLoadProps> = ({
+  onAppCodeSubmission,
+  autoLoadFromQuery,
+  setAutoLoadFromQuery,
+}) => {
   const query = new URLSearchParams(useLocation().search).get("q");
   const [externalNullifier, setExternalNullifier] = useState("");
   const [identityGroup, setIdentityGroup] = useState("");
@@ -58,11 +67,26 @@ export const AppCodeManualEntry: FunctionComponent<AppCodeScannerProps> = ({ onA
         if (payload.identityGroup) setIdentityGroup(payload.identityGroup);
         if (payload.message) setMessage(payload.message);
         if (payload.type) setType(payload.type);
+        if (
+          autoLoadFromQuery &&
+          payload.externalNullifier &&
+          payload.identityGroup &&
+          payload.message &&
+          payload.type
+        ) {
+          setAutoLoadFromQuery(false);
+          onAppCodeSubmission({
+            externalNullifier: payload.externalNullifier,
+            identityGroup: payload.identityGroup,
+            message: payload.message,
+            type: payload.type,
+          });
+        }
       } catch (e) {
         console.error(e);
       }
     }
-  }, [query]);
+  }, [query, onAppCodeSubmission, autoLoadFromQuery, setAutoLoadFromQuery]);
   return (
     <div>
       <div className="my-4">
@@ -277,6 +301,7 @@ export const ClaimCardRaw: FunctionComponent<ClaimCardRawProps> = ({ onClaim, ap
   const [showCamera, setShowCamera] = useState(false);
   const toggleCamera = () => setShowCamera(!showCamera);
   const [confirmedAppPayload, setConfirmedAppPayload] = useState<ClaimQR["payload"]>();
+  const [autoLoadFromQuery, setAutoLoadFromQuery] = useState(true);
 
   const onAppCodeSubmission = (claim: ClaimQR["payload"]) => {
     setConfirmedAppPayload(claim);
@@ -296,7 +321,13 @@ export const ClaimCardRaw: FunctionComponent<ClaimCardRawProps> = ({ onClaim, ap
       <div className="max-w-xl flex-1 bg-white p-4 rounded-md">
         {appState.state === ClaimState.ERROR && <div>{appState.error.message}</div>}
         {showAppCodeEntry && showCamera && <AppCodeScanner onAppCodeSubmission={onAppCodeSubmission} />}
-        {showAppCodeEntry && !showCamera && <AppCodeManualEntry onAppCodeSubmission={onAppCodeSubmission} />}
+        {showAppCodeEntry && !showCamera && (
+          <AppCodeManualEntry
+            onAppCodeSubmission={onAppCodeSubmission}
+            autoLoadFromQuery={autoLoadFromQuery}
+            setAutoLoadFromQuery={setAutoLoadFromQuery}
+          />
+        )}
         {showAppCodeEntry && <ButtonLg onClick={toggleCamera}>Toggle Camera</ButtonLg>}
         {showAppConfirmation && (
           <ClaimCardConfirmation
