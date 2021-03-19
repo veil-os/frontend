@@ -5,6 +5,7 @@ import { Create } from "./views/Create";
 import { Distribute } from "./views/Distribute";
 import { Home } from "./views/Home";
 import { Identity } from "./views/Identity";
+import { Groups } from "./views/Groups";
 
 export const Router = (): ReactElement => {
   return (
@@ -24,6 +25,9 @@ export const Router = (): ReactElement => {
         </Route>
         <Route path="/create">
           <Create />
+        </Route>
+        <Route path="/groups">
+          <Groups />
         </Route>
       </Switch>
     </BrowserRouter>

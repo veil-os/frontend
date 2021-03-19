@@ -13,8 +13,8 @@ export const IdentityGroup: FunctionComponent<IdentityGroupProps> = ({ name, ide
       <Link to={`identityGroup/${identityGroup}`}>
         <div className="flex items-center space-x-4">
           <div className="flex-1 min-w-0">
-            <p className="text-lg font-medium text-gray-900 truncate">{name}</p>
-            <p className="text-sm text-gray-500 truncate">{identityGroup}</p>
+            <p className="text-lg font-medium text-gray-100 truncate">{name}</p>
+            <p className="text-sm text-gray-400">{identityGroup}</p>
           </div>
           <div>
             <a
@@ -37,16 +37,16 @@ export interface IdentityGroupListProps {
 export const IdentityGroupList: FunctionComponent<IdentityGroupListProps> = ({ identityGroups }) => {
   return (
     <div className="flex flex-col items-center">
-      <div className="max-w-6xl w-full">
+      <div className="w-full">
         <div className="flow-root mt-6 w-full">
-          <ul className="-my-5 divide-y divide-gray-200">
+          <ul className="-my-5 divide-y divide-gray-600">
             {identityGroups.map((identityGroup, i) => (
               <IdentityGroup key={i} {...identityGroup} />
             ))}
           </ul>
         </div>
         <div className="my-6 text-right">
-          <ButtonLg>Add New Identity Group</ButtonLg>
+          <ButtonLg>Create New Identity Group</ButtonLg>
         </div>
       </div>
     </div>
