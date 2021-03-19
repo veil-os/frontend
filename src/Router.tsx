@@ -3,9 +3,9 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { Claim } from "./views/Claim";
 import { Create } from "./views/Create";
 import { Distribute } from "./views/Distribute";
+import { Groups } from "./views/Groups";
 import { Home } from "./views/Home";
 import { Identity } from "./views/Identity";
-import { Groups } from "./views/Groups";
 
 export const Router = (): ReactElement => {
   return (

@@ -71,7 +71,7 @@ export const ApplicationSelection: FunctionComponent = () => {
         </Link>
       </li>
       <li className="col-span-1 flex flex-col text-center bg-white rounded-md shadow divide-y divide-gray-200">
-        <a href="#" onClick={() => alert("Coming Soon")}>
+        <Link to="groups">
           <div className="flex-1 flex flex-col p-8">
             <h3 className="mt-4 text-gray-900 text-lg font-medium">Manage Groups</h3>
             <dd className="text-gray-500 text-sm mb-6">Update group and membership</dd>
@@ -90,7 +90,7 @@ export const ApplicationSelection: FunctionComponent = () => {
               />
             </svg>
           </div>
-        </a>
+        </Link>
       </li>
     </ul>
   );

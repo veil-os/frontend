@@ -1,9 +1,9 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { listIdentityGroups } from "../../services/backend";
 import { IdentityGroups } from "../../types";
+import { IdentityGroupList } from "../IdentityGroupList";
 import { LayoutDark } from "../Layout";
 import { NavigationBar } from "../NavigationBar";
-import { IdentityGroupList } from "../IdentityGroupList";
 
 interface UninitializedState {
   state: "UNINITIALIZED";
