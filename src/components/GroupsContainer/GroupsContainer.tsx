@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { FunctionComponent, useCallback, useEffect, useState } from "react";
 import { listIdentityGroups } from "../../services/backend";
 import { IdentityGroups } from "../../types";
 import { IdentityGroupList } from "../IdentityGroupList";
@@ -38,7 +38,7 @@ export const Loader: FunctionComponent = () => {
 
 export const GroupsContainer: React.FunctionComponent = () => {
   const [state, setState] = useState<IdentityGroupsListState>({ state: "UNINITIALIZED" });
-  const loadIdentityGroup = async () => {
+  const loadIdentityGroup = useCallback(async () => {
     try {
       const identityGroups = await listIdentityGroups();
       setState({
@@ -51,7 +51,7 @@ export const GroupsContainer: React.FunctionComponent = () => {
         error,
       });
     }
-  };
+  }, []);
   useEffect(() => {
     if (state.state === "UNINITIALIZED") loadIdentityGroup();
   }, [state, loadIdentityGroup]);

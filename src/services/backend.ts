@@ -1,6 +1,13 @@
 import axios, { AxiosError } from "axios";
 import { config } from "../config";
-import { IdentityCommitmentsRT, IdentityGroupsRT, Claim, ClaimWTimestampRT, ClaimsWTimestampRT } from "../types";
+import {
+  IdentityCommitmentsRT,
+  IdentityGroupRT,
+  IdentityGroupsRT,
+  Claim,
+  ClaimWTimestampRT,
+  ClaimsWTimestampRT,
+} from "../types";
 
 const { endpoint } = config;
 
@@ -46,4 +53,16 @@ export const listIdentityGroups = errorHandler(async () => {
   const res = await axios.get(`${endpoint}/identityGroup`);
   const groups = IdentityGroupsRT.check(res.data);
   return groups;
+});
+
+export const getIdentityGroupInfo = errorHandler(async ({ identityGroup }: { identityGroup: string }) => {
+  const res = await axios.get(`${endpoint}/identityGroup/${identityGroup}`);
+  const group = IdentityGroupRT.check(res.data);
+  return group;
+});
+
+export const getIdentityCommitmentByGroup = errorHandler(async ({ identityGroup }: { identityGroup: string }) => {
+  const res = await axios.get(`${endpoint}/identityCommitment/${identityGroup}`);
+  const identityCommitments = IdentityCommitmentsRT.check(res.data);
+  return identityCommitments;
 });

@@ -41,7 +41,7 @@ export const IdentityGroupList: FunctionComponent<IdentityGroupListProps> = ({ i
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{identityGroup.name}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{identityGroup.identityGroup}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <Link to={`group/${identityGroup.identityGroup}`}>
+                  <Link to={`/group/${identityGroup.identityGroup}`}>
                     <div className="bg-gray-600 rounded-full border-gray-600 border-2 p-1 text-center text-gray-100">
                       Manage
                     </div>
