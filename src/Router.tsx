@@ -3,6 +3,7 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { Claim } from "./views/Claim";
 import { Create } from "./views/Create";
 import { Distribute } from "./views/Distribute";
+import { Groups } from "./views/Groups";
 import { Home } from "./views/Home";
 import { Identity } from "./views/Identity";
 
@@ -24,6 +25,9 @@ export const Router = (): ReactElement => {
         </Route>
         <Route path="/create">
           <Create />
+        </Route>
+        <Route path="/groups">
+          <Groups />
         </Route>
       </Switch>
     </BrowserRouter>

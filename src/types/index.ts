@@ -27,5 +27,6 @@ export interface ClaimQR {
 }
 
 export * from "./identityCommitment";
+export * from "./identityGroup";
 export * from "./snarkProof";
 export * from "./claim";
