@@ -17,6 +17,14 @@ export interface InitializedIdentityState {
 
 export type IdentityState = InitializingIdentityState | UninitializedIdentityState | InitializedIdentityState;
 
+export interface IdentityGroupManager {
+  key: string;
+}
+
+export interface IdentityGroupManagers {
+  [identityGroupId: string]: IdentityGroupManager;
+}
+
 export enum AppMode {
   VOUCHER = "VOUCHER",
 }
