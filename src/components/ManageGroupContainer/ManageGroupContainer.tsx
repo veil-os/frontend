@@ -1,5 +1,6 @@
 import React, { FunctionComponent, useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { useIdentityGroupManagementContext } from "../../common/context/IdentityGroupManagementContext";
 import { getIdentityCommitmentByGroup, getIdentityGroupInfo } from "../../services/backend";
 import { IdentityCommitments, IdentityGroup, SideEffectState } from "../../types";
 import { LayoutDark } from "../Layout";
@@ -28,6 +29,9 @@ export const ManageGroupContainer: React.FunctionComponent = () => {
   const [showAddMembersModal, setShowAddMembersModal] = useState(false);
   const [identityState, setIdentityState] = useState<IdentityGroupsIdentitiesState>({ state: "UNINITIALIZED" });
   const [infoState, setInfoState] = useState<IdentityGroupsInfoState>({ state: "UNINITIALIZED" });
+  const { managers } = useIdentityGroupManagementContext();
+
+  const managerKey = managers[identityGroup] ? managers[identityGroup].key : undefined;
 
   const toggleIdentityManagementModal = () => setShowIdentityManagementModal(!showIdentityManagementModal);
   const toggleAddMembersModal = () => setShowAddMembersModal(!showAddMembersModal);
@@ -91,7 +95,9 @@ export const ManageGroupContainer: React.FunctionComponent = () => {
                 <div className="text-gray-500">{infoState.data.identityGroup}</div>
               </div>
               <div
-                className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-gray-100"
+                className={`mx-auto flex items-center justify-center h-12 w-12 rounded-full ${
+                  managerKey ? "bg-green-100" : "bg-gray-100"
+                }`}
                 onClick={toggleIdentityManagementModal}
               >
                 <svg
@@ -99,7 +105,7 @@ export const ManageGroupContainer: React.FunctionComponent = () => {
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  className="h-6 w-6 text-gray-600"
+                  className={`h-6 w-6 ${managerKey ? "text-green-600" : "text-gray-600"}`}
                 >
                   <path
                     strokeLinecap="round"
