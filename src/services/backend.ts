@@ -1,12 +1,14 @@
 import axios, { AxiosError } from "axios";
 import { config } from "../config";
 import {
+  IdentityCommitmentRT,
   IdentityCommitmentsRT,
   IdentityGroupRT,
   IdentityGroupsRT,
   Claim,
   ClaimWTimestampRT,
   ClaimsWTimestampRT,
+  IdentityCommitment,
 } from "../types";
 
 const { endpoint } = config;
@@ -64,5 +66,11 @@ export const getIdentityGroupInfo = errorHandler(async ({ identityGroup }: { ide
 export const getIdentityCommitmentByGroup = errorHandler(async ({ identityGroup }: { identityGroup: string }) => {
   const res = await axios.get(`${endpoint}/identityCommitment/${identityGroup}`);
   const identityCommitments = IdentityCommitmentsRT.check(res.data);
+  return identityCommitments;
+});
+
+export const insertIdentityCommitmentToGroup = errorHandler(async (idg: IdentityCommitment, key: string) => {
+  const res = await axios.post(`${endpoint}/identityCommitment`, idg, { headers: { "x-api-key": key } });
+  const identityCommitments = IdentityCommitmentRT.check(res.data);
   return identityCommitments;
 });

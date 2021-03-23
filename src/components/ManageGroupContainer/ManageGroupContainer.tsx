@@ -5,6 +5,7 @@ import { getIdentityCommitmentByGroup, getIdentityGroupInfo } from "../../servic
 import { IdentityCommitments, IdentityGroup } from "../../types";
 import { LayoutDark } from "../Layout";
 import { NavigationBar } from "../NavigationBar";
+import { AddMembersModal } from "./AddMembersModal";
 import { IdentityGroupManagerModal } from "./IdentityGroupManagerModal";
 
 interface UninitializedIdentitiesState {
@@ -65,10 +66,12 @@ export const Loader: FunctionComponent = () => {
 export const ManageGroupContainer: React.FunctionComponent = () => {
   const { identityGroup } = useParams<{ identityGroup: string }>();
   const [showIdentityManagementModal, setShowIdentityManagementModal] = useState(false);
+  const [showAddMembersModal, setShowAddMembersModal] = useState(false);
   const [identityState, setIdentityState] = useState<IdentityGroupsIdentitiesState>({ state: "UNINITIALIZED" });
   const [infoState, setInfoState] = useState<IdentityGroupsInfoState>({ state: "UNINITIALIZED" });
 
   const toggleIdentityManagementModal = () => setShowIdentityManagementModal(!showIdentityManagementModal);
+  const toggleAddMembersModal = () => setShowAddMembersModal(!showAddMembersModal);
 
   const loadIdentityCommitments = useCallback(async () => {
     try {
@@ -150,7 +153,26 @@ export const ManageGroupContainer: React.FunctionComponent = () => {
             </div>
           )}
         </div>
-        <div className="text-white text-2xl mt-6 mb-2">Members</div>
+        <div className="text-white text-2xl mt-6 mb-2 flex items-center justify-between">
+          <div>Members</div>
+          <div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              className="w-8 h-8 cursor-pointer"
+              onClick={toggleAddMembersModal}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+        </div>
         {identityState.state === "UNINITIALIZED" || (identityState.state === "FETCHING" && <Loader />)}
         {identityState.state === "SUCCESS" && (
           <IdentityCommitmentList identityCommitments={identityState.identityCommitments} />
@@ -158,6 +180,13 @@ export const ManageGroupContainer: React.FunctionComponent = () => {
       </div>
       {showIdentityManagementModal && (
         <IdentityGroupManagerModal identityGroup={identityGroup} toggleModal={toggleIdentityManagementModal} />
+      )}
+      {showAddMembersModal && (
+        <AddMembersModal
+          identityGroup={identityGroup}
+          toggleModal={toggleAddMembersModal}
+          reloadMembers={loadIdentityCommitments}
+        />
       )}
     </LayoutDark>
   );

@@ -38,3 +38,4 @@ export * from "./identityCommitment";
 export * from "./identityGroup";
 export * from "./snarkProof";
 export * from "./claim";
+export * from "./sideEffects";
