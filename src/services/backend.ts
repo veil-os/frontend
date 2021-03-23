@@ -74,3 +74,8 @@ export const insertIdentityCommitmentToGroup = errorHandler(async (idg: Identity
   const identityCommitments = IdentityCommitmentRT.check(res.data);
   return identityCommitments;
 });
+
+export const deleteIdentityCommitmentFromGroup = errorHandler(async (idg: IdentityCommitment, key: string) => {
+  await axios.delete(`${endpoint}/identityCommitment`, { headers: { "x-api-key": key }, data: idg });
+  return true;
+});
