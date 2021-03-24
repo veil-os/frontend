@@ -1,12 +1,16 @@
 import axios, { AxiosError } from "axios";
 import { config } from "../config";
 import {
+  IdentityCommitmentRT,
   IdentityCommitmentsRT,
   IdentityGroupRT,
   IdentityGroupsRT,
   Claim,
   ClaimWTimestampRT,
   ClaimsWTimestampRT,
+  IdentityCommitment,
+  IdentityGroup,
+  IdentityGroupCreateResponseRT,
 } from "../types";
 
 const { endpoint } = config;
@@ -65,4 +69,21 @@ export const getIdentityCommitmentByGroup = errorHandler(async ({ identityGroup 
   const res = await axios.get(`${endpoint}/identityCommitment/${identityGroup}`);
   const identityCommitments = IdentityCommitmentsRT.check(res.data);
   return identityCommitments;
+});
+
+export const insertIdentityCommitmentToGroup = errorHandler(async (idg: IdentityCommitment, key: string) => {
+  const res = await axios.post(`${endpoint}/identityCommitment`, idg, { headers: { "x-api-key": key } });
+  const identityCommitments = IdentityCommitmentRT.check(res.data);
+  return identityCommitments;
+});
+
+export const deleteIdentityCommitmentFromGroup = errorHandler(async (idg: IdentityCommitment, key: string) => {
+  await axios.delete(`${endpoint}/identityCommitment`, { headers: { "x-api-key": key }, data: idg });
+  return true;
+});
+
+export const createIdentityGroup = errorHandler(async (idg: Pick<IdentityGroup, "name">) => {
+  const res = await axios.post(`${endpoint}/identityGroup`, idg);
+  const created = IdentityGroupCreateResponseRT.check(res.data);
+  return created;
 });

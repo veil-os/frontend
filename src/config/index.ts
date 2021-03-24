@@ -1,7 +1,7 @@
 export const isDevelopment = process.env.NODE_ENV === "development";
 
 const generateConfig = () => ({
-  endpoint: false ? "http://localhost:3000" : "https://api.veilos.io",
+  endpoint: isDevelopment ? "http://localhost:3000" : "https://api.veilos.io",
   defaults: {
     DEFAULT_EXTERNAL_NULLIFIER: "DEMO_TOPIC",
     DEFAULT_IDENTITY_GROUP: "9436b3a9-e1c6-4214-8398-e5036c220995",

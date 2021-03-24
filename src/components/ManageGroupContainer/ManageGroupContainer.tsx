@@ -1,54 +1,16 @@
 import React, { FunctionComponent, useCallback, useEffect, useState } from "react";
-import Identicon from "react-jdenticon";
 import { useParams } from "react-router";
+import { useIdentityGroupManagementContext } from "../../common/context/IdentityGroupManagementContext";
 import { getIdentityCommitmentByGroup, getIdentityGroupInfo } from "../../services/backend";
-import { IdentityCommitments, IdentityGroup } from "../../types";
+import { IdentityCommitments, IdentityGroup, SideEffectState } from "../../types";
 import { LayoutDark } from "../Layout";
 import { NavigationBar } from "../NavigationBar";
+import { AddMembersModal } from "./AddMembersModal";
+import { IdentityCommitmentList } from "./IdentityCommitmentList";
+import { IdentityGroupManagerModal } from "./IdentityGroupManagerModal";
 
-interface UninitializedIdentitiesState {
-  state: "UNINITIALIZED";
-}
-
-interface FetchingIdentitiesState {
-  state: "FETCHING";
-}
-
-interface SuccessIdentitiesState {
-  state: "SUCCESS";
-  identityCommitments: IdentityCommitments;
-}
-
-interface ErrorIdentitiesState {
-  state: "ERROR";
-  error: Error;
-}
-
-type IdentityGroupsIdentitiesState =
-  | UninitializedIdentitiesState
-  | FetchingIdentitiesState
-  | SuccessIdentitiesState
-  | ErrorIdentitiesState;
-
-interface UninitializedInfoState {
-  state: "UNINITIALIZED";
-}
-
-interface FetchingInfoState {
-  state: "FETCHING";
-}
-
-interface SuccessInfoState {
-  state: "SUCCESS";
-  identityGroup: IdentityGroup;
-}
-
-interface ErrorInfoState {
-  state: "ERROR";
-  error: Error;
-}
-
-type IdentityGroupsInfoState = UninitializedInfoState | FetchingInfoState | SuccessInfoState | ErrorInfoState;
+type IdentityGroupsIdentitiesState = SideEffectState<IdentityCommitments>;
+type IdentityGroupsInfoState = SideEffectState<IdentityGroup>;
 
 export const Loader: FunctionComponent = () => {
   return (
@@ -63,15 +25,23 @@ export const Loader: FunctionComponent = () => {
 
 export const ManageGroupContainer: React.FunctionComponent = () => {
   const { identityGroup } = useParams<{ identityGroup: string }>();
+  const [showIdentityManagementModal, setShowIdentityManagementModal] = useState(false);
+  const [showAddMembersModal, setShowAddMembersModal] = useState(false);
   const [identityState, setIdentityState] = useState<IdentityGroupsIdentitiesState>({ state: "UNINITIALIZED" });
   const [infoState, setInfoState] = useState<IdentityGroupsInfoState>({ state: "UNINITIALIZED" });
+  const { managers } = useIdentityGroupManagementContext();
+
+  const managerKey = managers[identityGroup] ? managers[identityGroup].key : undefined;
+
+  const toggleIdentityManagementModal = () => setShowIdentityManagementModal(!showIdentityManagementModal);
+  const toggleAddMembersModal = () => setShowAddMembersModal(!showAddMembersModal);
 
   const loadIdentityCommitments = useCallback(async () => {
     try {
       const identityCommitments = await getIdentityCommitmentByGroup({ identityGroup });
       setIdentityState({
         state: "SUCCESS",
-        identityCommitments,
+        data: identityCommitments,
       });
     } catch (error) {
       setIdentityState({
@@ -86,7 +56,7 @@ export const ManageGroupContainer: React.FunctionComponent = () => {
       const info = await getIdentityGroupInfo({ identityGroup });
       setInfoState({
         state: "SUCCESS",
-        identityGroup: info,
+        data: info,
       });
     } catch (error) {
       setInfoState({
@@ -117,64 +87,76 @@ export const ManageGroupContainer: React.FunctionComponent = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
         <div className="text-white text-2xl mt-6 mb-2">Group Information</div>
         <div className="bg-white p-4 my-2">
-          {infoState.state === "UNINITIALIZED" || (infoState.state === "FETCHING" && <Loader />)}
+          {infoState.state === "UNINITIALIZED" || (infoState.state === "PENDING" && <Loader />)}
           {infoState.state === "SUCCESS" && (
-            <>
-              <div className="text-xl text-gray-800">{infoState.identityGroup.name}</div>
-              <div className="text-gray-500">{infoState.identityGroup.identityGroup}</div>
-            </>
+            <div className="flex">
+              <div className="flex-1">
+                <div className="text-xl text-gray-800">{infoState.data.name}</div>
+                <div className="text-gray-500">{infoState.data.identityGroup}</div>
+              </div>
+              <div
+                className={`mx-auto flex items-center justify-center h-12 w-12 rounded-full ${
+                  managerKey ? "bg-green-100" : "bg-gray-100"
+                }`}
+                onClick={toggleIdentityManagementModal}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  className={`h-6 w-6 ${managerKey ? "text-green-600" : "text-gray-600"}`}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
+                  />
+                </svg>
+              </div>
+            </div>
           )}
         </div>
-        <div className="text-white text-2xl mt-6 mb-2">Members</div>
-        {identityState.state === "UNINITIALIZED" || (identityState.state === "FETCHING" && <Loader />)}
+        <div className="text-white text-2xl mt-6 mb-2 flex items-center justify-between">
+          <div>Members</div>
+          <div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              className="w-8 h-8 cursor-pointer"
+              onClick={toggleAddMembersModal}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+        </div>
+        {identityState.state === "UNINITIALIZED" || (identityState.state === "PENDING" && <Loader />)}
         {identityState.state === "SUCCESS" && (
-          <IdentityCommitmentList identityCommitments={identityState.identityCommitments} />
+          <IdentityCommitmentList
+            identityCommitments={identityState.data}
+            identityGroup={identityGroup}
+            reloadMembers={loadIdentityCommitments}
+          />
         )}
       </div>
+      {showIdentityManagementModal && (
+        <IdentityGroupManagerModal identityGroup={identityGroup} toggleModal={toggleIdentityManagementModal} />
+      )}
+      {showAddMembersModal && (
+        <AddMembersModal
+          identityGroup={identityGroup}
+          toggleModal={toggleAddMembersModal}
+          reloadMembers={loadIdentityCommitments}
+        />
+      )}
     </LayoutDark>
-  );
-};
-
-export interface IdentityCommitmentListProps {
-  identityCommitments: IdentityCommitments;
-}
-
-export const IdentityCommitmentList: FunctionComponent<IdentityCommitmentListProps> = ({ identityCommitments }) => {
-  return (
-    <div className="w-full">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
-          <tr>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Name
-            </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              ID
-            </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {identityCommitments.map(({ identityCommitment }, i) => (
-            <tr className={i % 2 === 0 ? "bg-white" : "bg-gray-50"} key={i}>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                <Identicon size="72" value={identityCommitment} />
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{identityCommitment}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                <div
-                  className="bg-gray-600 rounded-full border-gray-600 border-2 p-1 text-center text-gray-100 cursor-pointer"
-                  onClick={() => alert("Coming soon!")}
-                >
-                  Delete
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
   );
 };
