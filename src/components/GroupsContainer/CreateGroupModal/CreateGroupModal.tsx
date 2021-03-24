@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Redirect } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useIdentityGroupManagementContext } from "../../../common/context/IdentityGroupManagementContext";
 import { createIdentityGroup } from "../../../services/backend";
 import { IdentityGroupCreateResponse, SideEffectState } from "../../../types";
@@ -14,7 +14,13 @@ export const CreateGroupModal: React.FunctionComponent<CreateGroupModalProps> = 
   const [createState, setCreateState] = useState<SideEffectState<IdentityGroupCreateResponse>>({
     state: "UNINITIALIZED",
   });
+  const history = useHistory();
   const { setManager } = useIdentityGroupManagementContext();
+
+  const handleGoToGroup = () => {
+    if (createState.state !== "SUCCESS") return;
+    history.push(`/group/${createState.data.identityGroup}`);
+  };
 
   const handleCreateGroup = async () => {
     if (createState.state === "PENDING") return;
@@ -27,8 +33,6 @@ export const CreateGroupModal: React.FunctionComponent<CreateGroupModalProps> = 
       setCreateState({ state: "ERROR", error });
     }
   };
-
-  if (createState.state === "SUCCESS") return <Redirect to={`/group/${createState.data.identityGroup}`} />;
 
   return (
     <div className="fixed z-10 inset-0 overflow-y-auto">
@@ -46,14 +50,31 @@ export const CreateGroupModal: React.FunctionComponent<CreateGroupModalProps> = 
           <div>
             <div className="mt-3 text-center sm:mt-5">
               {createState.state === "ERROR" && (
-                <div className="bg-red-600 py-4 rounded-lg">
+                <div className="bg-red-600 py-4 mb-4 rounded-lg">
                   <h3 className="text-lg leading-6 font-medium text-gray-200" id="modal-headline">
                     Error
                   </h3>
                   <div className="text-sm my-2 text-white">{createState.error.message}</div>
                 </div>
               )}
-              {createState.state === "UNINITIALIZED" && (
+              {createState.state === "SUCCESS" && (
+                <>
+                  <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
+                    Group Created
+                  </h3>
+                  <div className="text-sm my-2 text-gray-500">Congratulation, you've created your group!</div>
+                  <div className="my-2 text-gray-50 bg-red-500 p-2 rounded">
+                    Copy the management key below and save it in a secured location:
+                  </div>
+                  <label className="block text-sm font-medium text-gray-700 text-left mt-4">Management Key</label>
+                  <div className="my-2 text-sm bg-green-200 p-2">{createState.data.key}</div>
+                  <div className="mt-1 text-sm my-2 text-gray-500">
+                    The management key is required to manage the group such as adding or deleting members from your
+                    group. Anyone with the key is able to manage the group.
+                  </div>
+                </>
+              )}
+              {(createState.state === "UNINITIALIZED" || createState.state === "ERROR") && (
                 <>
                   <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
                     Create New Group
@@ -95,6 +116,15 @@ export const CreateGroupModal: React.FunctionComponent<CreateGroupModalProps> = 
                 className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
               >
                 Create Group
+              </button>
+            )}
+            {createState.state === "SUCCESS" && (
+              <button
+                type="button"
+                onClick={handleGoToGroup}
+                className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+              >
+                Manage Group
               </button>
             )}
             <button
