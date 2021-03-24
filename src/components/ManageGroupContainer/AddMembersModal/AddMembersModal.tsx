@@ -35,8 +35,6 @@ export const AddMembersModal: React.FunctionComponent<AddMembersModalProps> = ({
     }
   };
 
-  console.log(addingState);
-
   if (!managerKey)
     return (
       <div className="fixed z-10 inset-0 overflow-y-auto">

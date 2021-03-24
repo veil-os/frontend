@@ -9,6 +9,8 @@ import {
   ClaimWTimestampRT,
   ClaimsWTimestampRT,
   IdentityCommitment,
+  IdentityGroup,
+  IdentityGroupCreateResponseRT,
 } from "../types";
 
 const { endpoint } = config;
@@ -78,4 +80,10 @@ export const insertIdentityCommitmentToGroup = errorHandler(async (idg: Identity
 export const deleteIdentityCommitmentFromGroup = errorHandler(async (idg: IdentityCommitment, key: string) => {
   await axios.delete(`${endpoint}/identityCommitment`, { headers: { "x-api-key": key }, data: idg });
   return true;
+});
+
+export const createIdentityGroup = errorHandler(async (idg: Pick<IdentityGroup, "name">) => {
+  const res = await axios.post(`${endpoint}/identityGroup`, idg);
+  const created = IdentityGroupCreateResponseRT.check(res.data);
+  return created;
 });

@@ -4,6 +4,7 @@ import { IdentityGroups } from "../../types";
 import { IdentityGroupList } from "../IdentityGroupList";
 import { LayoutDark } from "../Layout";
 import { NavigationBar } from "../NavigationBar";
+import { CreateGroupModal } from "./CreateGroupModal";
 
 interface UninitializedState {
   state: "UNINITIALIZED";
@@ -38,6 +39,10 @@ export const Loader: FunctionComponent = () => {
 
 export const GroupsContainer: React.FunctionComponent = () => {
   const [state, setState] = useState<IdentityGroupsListState>({ state: "UNINITIALIZED" });
+  const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
+
+  const toggleCreateGroupModal = () => setShowCreateGroupModal(!showCreateGroupModal);
+
   const loadIdentityGroup = useCallback(async () => {
     try {
       const identityGroups = await listIdentityGroups();
@@ -69,10 +74,19 @@ export const GroupsContainer: React.FunctionComponent = () => {
         </div>
       </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
-        <div className="text-white text-2xl mt-6 mb-2">Groups</div>
+        <div className="flex items-center justify-between mb-3">
+          <div className="text-white text-2xl mt-6 mb-2">Groups</div>
+          <div
+            className="text-gray-50 border-gray-50 rounded-md border-2 p-2 cursor-pointer text-sm"
+            onClick={toggleCreateGroupModal}
+          >
+            Create New Group
+          </div>
+        </div>
         {state.state === "FETCHING" || (state.state === "UNINITIALIZED" && <Loader />)}
         {state.state === "SUCCESS" && <IdentityGroupList identityGroups={state.identityGroups} />}
       </div>
+      {showCreateGroupModal && <CreateGroupModal toggleModal={toggleCreateGroupModal} />}
     </LayoutDark>
   );
 };
