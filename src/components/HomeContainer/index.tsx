@@ -7,6 +7,7 @@ const HeroSection: React.FunctionComponent = () => {
   return (
     <main className="mt-16 mx-auto max-w-7xl px-4 sm:mt-24">
       <div className="text-center">
+        <img className="w-auto h-40 mx-auto my-6" src="/logo.svg" alt="" />
         <h1 className="text-4xl tracking-tight font-extrabold text-gray-100 sm:text-5xl md:text-6xl">
           <span className="block xl:inline">VEIL</span>
           <span className="block text-indigo-600 xl:inline">OS</span>

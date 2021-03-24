@@ -1,6 +1,18 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
+interface MenuItem {
+  label: string;
+  route: string;
+}
+
+const menuItems: MenuItem[] = [];
+
+const callToAction: MenuItem = {
+  label: "Github",
+  route: "https://github.com/veil-os",
+};
+
 export const NavigationBar: React.FunctionComponent = () => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const toggleShowMobileMenu = () => setShowMobileMenu(!showMobileMenu);
@@ -11,11 +23,7 @@ export const NavigationBar: React.FunctionComponent = () => {
           <div className="flex items-center justify-between w-full md:w-auto">
             <Link to="/">
               <span className="sr-only">Workflow</span>
-              <img
-                className="h-8 w-auto sm:h-10"
-                src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg"
-                alt=""
-              />
+              <img className="h-8 w-auto sm:h-10" src="/logo.svg" alt="" />
             </Link>
             <div className="-mr-2 flex items-center md:hidden">
               <button
@@ -41,27 +49,22 @@ export const NavigationBar: React.FunctionComponent = () => {
             </div>
           </div>
           <div className="hidden space-x-10 md:flex md:ml-10">
-            <a href="#" className="font-medium text-white hover:text-gray-300">
-              Product
-            </a>
-            <a href="#" className="font-medium text-white hover:text-gray-300">
-              Features
-            </a>
-            <a href="#" className="font-medium text-white hover:text-gray-300">
-              Marketplace
-            </a>
-            <a href="#" className="font-medium text-white hover:text-gray-300">
-              Company
-            </a>
+            {menuItems.map(({ label, route }, i) => (
+              <Link to={route} key={i}>
+                <span className="font-medium text-white hover:text-gray-300" key={i}>
+                  {label}
+                </span>
+              </Link>
+            ))}
           </div>
         </div>
         <div className="hidden md:flex">
-          <Link
-            to="/identity"
+          <a
+            href={callToAction.route}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700"
           >
-            Identity
-          </Link>
+            {callToAction.label}
+          </a>
         </div>
       </nav>
       {/*
@@ -82,7 +85,7 @@ export const NavigationBar: React.FunctionComponent = () => {
         <div className="rounded-lg shadow-md bg-white ring-1 ring-black ring-opacity-5 overflow-hidden">
           <div className="px-5 pt-4 flex items-center justify-between">
             <div>
-              <img className="h-8 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="" />
+              <img className="h-8 w-auto" src="/logo.svg" alt="" />
             </div>
             <div className="-mr-2">
               <button
@@ -107,42 +110,24 @@ export const NavigationBar: React.FunctionComponent = () => {
           </div>
           <div role="menu" aria-orientation="vertical" aria-labelledby="main-menu">
             <div className="px-2 pt-2 pb-3 space-y-1" role="none">
-              <a
-                href="#"
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
-                role="menuitem"
-              >
-                Product
-              </a>
-              <a
-                href="#"
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
-                role="menuitem"
-              >
-                Features
-              </a>
-              <a
-                href="#"
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
-                role="menuitem"
-              >
-                Marketplace
-              </a>
-              <a
-                href="#"
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
-                role="menuitem"
-              >
-                Company
-              </a>
+              {menuItems.map(({ label, route }, i) => (
+                <Link to={route} key={i}>
+                  <span
+                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+                    role="menuitem"
+                  >
+                    {label}
+                  </span>
+                </Link>
+              ))}
             </div>
             <div role="none">
               <a
-                href="#"
+                href={callToAction.route}
                 className="block w-full px-5 py-3 text-center font-medium text-indigo-600 bg-gray-50 hover:bg-gray-100"
                 role="menuitem"
               >
-                Log in
+                {callToAction.label}
               </a>
             </div>
           </div>
